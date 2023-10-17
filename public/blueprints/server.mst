@@ -1,0 +1,5 @@
+{{#servers}}
+<div>
+    <b>{{name}}</b>
+</div>
+{{/servers}}

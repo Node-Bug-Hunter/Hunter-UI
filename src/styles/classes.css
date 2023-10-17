@@ -1,0 +1,97 @@
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex.c { flex-direction: column; }
+
+.button {
+    margin: 4px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    color: var(--text);
+    background-color: var(--secondary);
+    transition: all 0.2s ease;
+}
+
+.button:hover {
+    filter: hue-rotate(5deg);
+    transform: translateY(-2px);
+}
+
+.button:active {
+    animation: clicked 0.2s ease-in-out;
+}
+
+@keyframes clicked {
+    0% { scale: 1; }
+    50% { scale: 0.9; }
+    100% { scale: 1; }
+}
+
+.button.inv {
+    color: var(--background);
+    background-color: var(--primary);
+}
+
+.box-section {
+    margin: 50px 10px;
+    max-width: 640px;
+}
+
+.box-section > b {
+    margin-bottom: 20px;
+    font-size: var(--font-sz-el);
+}
+
+.box-section > .subsec {
+    width: 100%;
+    margin: 1px 20px;
+    font-size: var(--font-sz-m);
+}
+
+.box-section > .subsec > .card {
+    margin: 5px;
+    height: 100px;
+    padding: 10px;
+    font-weight: bold;
+    font-style: italic;
+    transform: skew(3deg);
+    width: calc(10% * var(--_spacer));
+}
+
+.box-section > .subsec > .card.a {
+    background-color: var(--primary);
+    border-radius: 40px 0 0 0;
+    color: var(--background);
+}
+
+.box-section > .subsec > .card.b {
+    background-color: var(--secondary);
+    border-radius: 0 40px 0 0;
+    color: var(--text);
+}
+
+.box-section > .subsec > .card.c {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    color: var(--text);
+    height: 40px;
+}
+
+.box-section > .subsec > .card.d {
+    background-color: var(--text);
+    border-radius: 0 0 0 40px;
+    color: var(--background);
+}
+
+.box-section > .subsec > .card.e {
+    background-color: var(--accent);
+    border-radius: 0 0 40px 0;
+    color: var(--text);
+}
+

@@ -38,60 +38,16 @@
     background-color: var(--primary);
 }
 
-.box-section {
-    margin: 50px 10px;
-    max-width: 640px;
-}
-
-.box-section > b {
-    margin-bottom: 20px;
-    font-size: var(--font-sz-el);
-}
-
-.box-section > .subsec {
-    width: 100%;
-    margin: 1px 20px;
+.link {
+    padding: 2px 0;
+    color: var(--link);
+    text-underline-offset: 2px;
     font-size: var(--font-sz-m);
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
 }
 
-.box-section > .subsec > .card {
-    margin: 5px;
-    height: 100px;
-    padding: 10px;
-    font-weight: bold;
-    font-style: italic;
-    transform: skew(3deg);
-    width: calc(10% * var(--_spacer));
+.link:hover, .link:active {
+    text-decoration-style: solid;
+    text-decoration-thickness: 2px;
 }
-
-.box-section > .subsec > .card.a {
-    background-color: var(--primary);
-    border-radius: 40px 0 0 0;
-    color: var(--background);
-}
-
-.box-section > .subsec > .card.b {
-    background-color: var(--secondary);
-    border-radius: 0 40px 0 0;
-    color: var(--text);
-}
-
-.box-section > .subsec > .card.c {
-    background-color: var(--background);
-    border: 1px solid var(--border);
-    color: var(--text);
-    height: 40px;
-}
-
-.box-section > .subsec > .card.d {
-    background-color: var(--text);
-    border-radius: 0 0 0 40px;
-    color: var(--background);
-}
-
-.box-section > .subsec > .card.e {
-    background-color: var(--accent);
-    border-radius: 0 0 40px 0;
-    color: var(--text);
-}
-

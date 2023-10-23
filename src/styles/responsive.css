@@ -3,9 +3,11 @@
   --font-sz-m: 16px;
   --font-sz-l: 24px;
   --font-sz-el: 26px;
+  --pad-lvl-0: 15vw;
 }
 
 body[data-theme="dark"] {
+  --link: #70ffff;
   --text: #fffbec;
   --border: #ffcfd871;
   --background: #140f00;
@@ -17,11 +19,12 @@ body[data-theme="dark"] {
 }
 
 body[data-theme="light"] {
+  --link: #003644;
   --text: #130e01;
   --border: #39000b71;
   --background: #fffbec;
   --primary: #e06500;
-  --secondary: #ffe49c;
+  --secondary: #ffec8e;
   --accent: #fba123;
   --shadow-a: #211400e3;
   --shadow-b: #fff;
@@ -33,5 +36,6 @@ body[data-theme="light"] {
     --font-sz-m: 14px;
     --font-sz-l: 20px;
     --font-sz-el: 24px;
+    --pad-lvl-0: 5vw;
   }
 }

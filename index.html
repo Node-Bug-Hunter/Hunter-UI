@@ -8,20 +8,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body data-theme="dark" class="flex c">
-    <header class="top flex">
-      <div class="brand flex">
-        <img src="/bug-hunter.png" alt="Bug-Hunter logo">
-        <b>Bug-Hunter</b>
-      </div>
-      <div class="section flex">
-        <a href="https://github.com/Techzy-Programmer/Bug-Hunter" target="_blank" class="github">
-          <img src="/icons/github.png" width="28" alt="Github Logo">
-        </a>
-        <div class="auth button">Console</div>
-      </div>
-    </header>
     <div id="app">
       <div class="home flex c">
+        <header class="flex">
+          <div class="brand flex">
+            <img src="/bug-hunter.png" alt="Bug-Hunter logo">
+            <b>Bug-Hunter</b>
+          </div>
+          <div class="section flex">
+            <a href="https://github.com/Techzy-Programmer/Bug-Hunter" target="_blank" class="github">
+              <img src="/icons/github.png" width="28" alt="Github Logo">
+            </a>
+            <div class="auth button" data-action="console">Console</div>
+          </div>
+        </header>
         <div class="box-section flex c">
           <b>Our Striking Features!</b>
           <div class="subsec flex">
@@ -36,9 +36,44 @@
             <div class="card flex e" style="--_spacer: 4;">Detailed contextual reports</div>
           </div>
         </div>
+        <div class="box-section flex c">
+          <b>How It Works?</b>
+          <div class="super flex">
+            <div class="info" index="1"><b>Initialization</b>: The application begins by creating a new instance of the <code>Hunter</code> class, passing in a configuration object. This configuration includes details like the application name, email addresses for error reporting, and various options to customize the error handling behavior.</div>
+            <div class="info" index="2"><b>Start Hunting</b>: <code>startHunting</code> method is invoked to start listening for uncaught exceptions and unhandled promise rejections in the Node.js application. This is achieved by attaching event listeners to the process object.</div>
+            <div class="info" index="3"><b>Error Occurence</b>: When an uncaught exception or unhandled rejection happens, the corresponding handler function <code>handleUncaughtException</code> or <code>handleUnhandledRejection</code> is triggered.</div>
+            <div class="info" index="4"><b>Error Handling</b>: These handler functions parse the error stack, construct the error data, and send it to the server for email reporting. If local logging is enabled, the error data is also written to a log file.</div>
+            <div class="info" index="5"><b>Error Reporting</b>: The <code>Agent</code> class is responsible for sending the error data to the server. It constructs the error data into an exception template, which includes details like the error message, stack trace, and code context. This data is then sent to the server via HTTP request.</div>
+            <div class="info" index="6"><b>Stop Hunting</b>: If the <code>quitOnError</code> option is enabled in the configuration, the application will exit when error occurs. Otherwise, the <code>stopHunting()</code> method can be called to stop listening for errors by removing the event listeners from the process object.</div>
+          </div>
+        </div>
+        <div class="box-section flex c">
+          <b>Feeling Excited?</b>
+          <div class="subsec flex">
+            <div class="button inv" data-action="goto-npm">Explore</div>
+            <code>npm install bug-hunter</code>
+          </div>
+          <div class="subsec flex">
+            <div class="block">Login or Register to</div>
+            <div class="button" data-action="console">Access Console</div>
+          </div>
+        </div>
       </div>
+      <footer class="flex">
+        <div class="flex c sec left" style="--_align: start;">
+          <a href="#" class="link pricing">Free?</a>
+          <a href="#" class="link contact">Reach Us</a>
+          <a href="#" class="link articles">Articles</a>
+        </div>
+        <div class="flex c sec right" style="--_align: end;">
+          <a href="#" class="link github">Github</a>
+          <a href="#" class="link linkedIn">LinkedIn</a>
+          <a href="#" class="link docs">Documentation</a>
+        </div>
+        <b class="complv" id="copywrt"></b>
+        <div class="complv sm">Made with ❤️ in <b>India</b></div>
+      </footer>
     </div>
-    <footer class="bottom"></footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

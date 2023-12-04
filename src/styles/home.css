@@ -36,6 +36,55 @@
     font-weight: 900;
 }
 
+#app > .home .authwall {
+    transition: transform 0.3s ease-in-out, opacity 0.4s ease;
+    background-color: var(--popup-bg);
+    border: 1px solid var(--border);
+    justify-content: flex-start;
+    backdrop-filter: blur(2px);
+    transform: translateX(0);
+    border-radius: 10px;
+    padding: 15px 10px;
+    position: fixed;
+    opacity: 1;
+    top: 60px;
+    right: 5px;
+    z-index: 20;
+    height: auto;
+    width: 280px;
+    min-height: 100px;
+}
+
+#app > .home .authwall.hide {
+    opacity: 0;
+    transform: translateX(calc(100% + 50px));
+}
+
+#app > .home .authwall::before {
+    content: '';
+    top: -12px;
+    right: 42px;
+    position: absolute;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid var(--border);
+}
+
+#app > .home .authwall > b {
+    font-size: var(--font-sz-m);
+    color: var(--accent);
+}
+
+#app > .home .authwall > i {
+    font-size: var(--font-sz-s);
+    margin-top: 2px;
+    opacity: 0.8;
+}
+
+#app > .home .authwall > .comps {
+    width: 98%;
+}
+
 #app > .home > .box-section {
     width: 100%;
     margin-top: 60px;

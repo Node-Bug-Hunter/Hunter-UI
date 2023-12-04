@@ -22,6 +22,28 @@
             <div class="auth button" data-action="console">Console</div>
           </div>
         </header>
+        <div class="authwall flex c hide">
+          <b>Login or Register</b>
+          <i>To access Console</i>
+          <div class="comps flex c">
+            <label class="email field flex c">
+              <input type="email" id="c-email" placeholder="&nbsp;"/>
+              <label for="c-email" class="placeholder">Enter your email</label>
+              <span class="error-message" aria-live="polite"></span>
+            </label>
+            <label class="passcode field flex c hide">
+              <input type="text" id="c-passcode" placeholder="&nbsp;"/>
+              <label for="c-passcode" class="placeholder">Enter the Passcode to continue</label>
+              <span class="error-message" aria-live="polite"></span>
+            </label>
+            <label class="name field flex c hide">
+              <input type="text" id="c-name" placeholder="&nbsp;"/>
+              <label for="c-name" class="placeholder">Enter your full name</label>
+              <span class="error-message" aria-live="polite"></span>
+            </label>
+            <div class="button inv" data-action="auth">Authenticate</div>
+          </div>
+        </div>
         <div class="box-section flex c">
           <b>Our Striking Features!</b>
           <div class="subsec flex">

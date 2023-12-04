@@ -15,7 +15,7 @@ body[data-theme="dark"] {
   --secondary: #3f3001;
   --accent: #ff6523;
   --shadow-a: #fff8e6e1;
-  --shadow-b: #fff;
+  --popup-bg: #160a00ee;
 }
 
 body[data-theme="light"] {
@@ -27,7 +27,7 @@ body[data-theme="light"] {
   --secondary: #ffec8e;
   --accent: #fba123;
   --shadow-a: #211400e3;
-  --shadow-b: #fff;
+  --popup-bg: #fff6c1ee;
 }
 
 @media screen and (max-width: 400px) {

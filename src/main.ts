@@ -1,5 +1,6 @@
 import { enableRouter, routeTo } from './utilities/router';
 import './styles/responsive.css';
+import './utilities/dom-extend';
 import './styles/classes.css';
 import './home';
 

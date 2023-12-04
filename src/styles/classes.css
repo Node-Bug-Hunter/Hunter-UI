@@ -8,14 +8,14 @@
 
 .button {
     margin: 4px;
+    cursor: pointer;
     font-weight: 600;
+    user-select: none;
     padding: 5px 10px;
     border-radius: 5px;
-    cursor: pointer;
-
     color: var(--text);
-    background-color: var(--secondary);
     transition: all 0.2s ease;
+    background-color: var(--secondary);
 }
 
 .button:hover {
@@ -50,4 +50,93 @@
 .link:hover, .link:active {
     text-decoration-style: solid;
     text-decoration-thickness: 2px;
+}
+
+.field {
+    display: flex;
+    margin-top: 5px;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 5px;
+    position: relative;
+    border-top: 20px solid transparent;
+}
+
+.field.hide {
+    display: none;
+}
+
+.field input {
+    border: none;
+    padding: 10px;
+    appearance: none;
+    background:linear-gradient(90deg, #222, #222) center bottom/0 0.15em no-repeat,
+        linear-gradient(90deg, #ccc, #ccc) left bottom/100% 0.15em no-repeat,
+        var(--secondary) left bottom/100% no-repeat;
+    transition: background-size 0.3s ease;
+    font-size: var(--font-sz-m);
+    border-radius: 4px 4px 0 0;
+    color: var(--text);
+    outline: none;
+    width: 250px;
+}
+
+.field input[disabled], .field input[disabled] + label {
+    filter: brightness(0.4);
+}
+
+.field input:focus, .field input:not(:placeholder-shown) {
+    background-size: 100% 0.15em, 100% 0.1em, 100%;
+}
+
+.field .placeholder {
+    top: 20px;
+    left: 10px;
+    cursor: text;
+    overflow: hidden;
+    user-select: none;
+    line-height: 100%;
+    color: var(--text);
+    position: absolute;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transform: translateY(-50%);
+    transition: top 0.3s ease, color 0.3s ease, font-size 0.3s ease;
+}
+  
+.field input:focus + .placeholder,
+.field input:not(:placeholder-shown) + .placeholder {
+    top: -10px;
+    color: var(--text);
+    font-size: var(--font-sz-s);
+}
+  
+.field .error-message {
+    width: 90%;
+    opacity: 1;
+    z-index: -5;
+    color: #fff;
+    display: flex;
+    min-height: 10px;
+    padding: 2px 4px;
+    align-items: center;
+    background: #800000;
+    transform: translateY(0px);
+    border-radius: 0 0 4px 4px;
+    font-size: var(--font-sz-s);
+    transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s ease;
+}
+  
+.field .error-message:empty {
+    transform: translateY(-10px);
+    opacity: 0;
+}
+
+.anim-request {
+    animation: reqAnim 0.6s ease infinite alternate;
+}
+
+@keyframes reqAnim {
+    from { filter: brightness(1); }
+    to { filter: brightness(0.2); }
 }

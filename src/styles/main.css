@@ -9,15 +9,24 @@ html, body {
 }
 
 body {
-    min-height: 100vh;
-    min-height: 100dvh;
     text-align: center;
     font-family: monospace;
     scroll-behavior: smooth;
     font-size: var(--font-sz-m);
     
-    color: var(--text);
     background-color: var(--background);
+    color: var(--text);
+}
+
+body > .page {
+    opacity: 1;
+    display: none;
+    transition: transform 0.32s ease, opacity 0.28s linear;
+}
+
+body > .page.out {
+    opacity: 0;
+    transform: translateY(-320px);
 }
 
 #app {
@@ -45,3 +54,113 @@ code {
     line-height: 1.4;
     overflow: auto;
 }
+
+header {
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    position: sticky;
+    padding: 5px 10px;
+    user-select: none;
+    background-color: var(--background);
+    justify-content: space-between !important;
+    box-shadow: 0 2px 20px -10px var(--shadow-a);
+}
+
+header::after {
+    content: '';
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    background-color: var(--border);
+}
+
+header > .brand img {
+    width: 32px;
+    margin-right: 2px;
+    border-radius: 32px;
+}
+
+header > .brand b {
+    font-size: var(--font-sz-l);
+    font-weight: 900;
+}
+
+header > .section > * { margin-right: 4px; }
+
+header > .section > *.hide {
+    display: none;
+}
+
+div.note-msg {
+    left: 0;
+    bottom: 0;
+    opacity: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 5px;
+    position: fixed;
+    text-align: left;
+    font-weight: 900;
+    text-wrap: balance;
+    justify-content: space-between;
+    transform: translateY(50%) scale(1.2);
+    transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.1s linear;
+}
+
+div.note-msg.display {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+div.note-msg > b { margin-left: 2px; }
+
+div.note-msg[data-type="ok"] {
+    color: var(--ok-clr);
+    background-color: var(--ok-bg);
+}
+
+div.note-msg[data-type="warn"] {
+    color: var(--warn-clr);
+    background-color: var(--warn-bg);
+}
+
+div.note-msg[data-type="info"] {
+    color: var(--info-clr);
+    background-color: var(--info-bg);
+}
+
+div.note-msg[data-type="err"] {
+    color: var(--err-clr);
+    background-color: var(--err-bg);
+}
+
+div.note-msg > span {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+}
+
+div.note-msg > span:hover::before,
+div.note-msg > span:hover::after { filter: opacity(0.5); }
+
+div.note-msg > span::before,
+div.note-msg > span::after {
+    left: 0;
+    top: 50%;
+    content: "";
+    height: 2px;
+    width: 100%;
+    margin-top: -2px;
+    position: absolute;
+    border-radius: 100%;
+    background: var(--gray-clr);
+}
+
+div.note-msg > span::before { transform: rotate(45deg); }
+div.note-msg > span::after { transform: rotate(-45deg); }

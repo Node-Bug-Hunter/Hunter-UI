@@ -1,9 +1,11 @@
 type DOMProps = {
     animating: boolean
     _temp_itxt: string
+    hidden: boolean
 }
 
 interface HTMLElement {
+    bringToStage: () => void;
     getProps: () => DOMProps;
     toggleAnim: () => void;
     disable: () => void;
@@ -11,11 +13,37 @@ interface HTMLElement {
     _props: DOMProps;
 }
 
+function onAllEl(selector: string, cb: (e: HTMLElement) => void) {
+    document.querySelectorAll(selector).forEach(e => cb(e as HTMLElement));
+}
+
+HTMLElement.prototype.bringToStage = function() {
+    const spinner = document.querySelector(".spinner")!;
+    spinner.classList.remove("stop");
+    const delay = 250;
+
+    onAllEl(".page", el => {
+        if (el === this) return;
+        el.classList.add("out");
+        setTimeout(() => el.style.display = "none", delay);
+    });
+
+    setTimeout(() => {
+        this.style.display = "block";
+
+        setTimeout(() => {
+            spinner.classList.add("stop");
+            this.classList.remove("out");
+        }, 50);
+    }, delay * 2);
+}
+
 HTMLElement.prototype.getProps = function() {
     if (this._props) return this._props;
     else return (this._props = {
         animating: false,
         _temp_itxt: "",
+        hidden: true
     });
 }
 

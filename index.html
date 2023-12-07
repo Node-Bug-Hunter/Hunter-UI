@@ -8,20 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body data-theme="dark" class="flex c">
-    <div id="app">
+    <header class="flex">
+      <div class="brand flex">
+        <img src="/bug-hunter.png" alt="Bug-Hunter logo">
+        <b>Bug-Hunter</b>
+      </div>
+      <div class="section flex">
+        <a href="https://github.com/Techzy-Programmer/Bug-Hunter" target="_blank" class="github">
+          <img src="/icons/github.png" width="28" alt="Github Logo">
+        </a>
+        <img class="profile icon hide" src="/icons/user.png" width="28" alt="User Profile Logo">
+        <div class="auth button" data-action="console">Console</div>
+      </div>
+    </header>
+    <div class="spinner"></div>
+    <div id="app" class="page out">
       <div class="home flex c">
-        <header class="flex">
-          <div class="brand flex">
-            <img src="/bug-hunter.png" alt="Bug-Hunter logo">
-            <b>Bug-Hunter</b>
-          </div>
-          <div class="section flex">
-            <a href="https://github.com/Techzy-Programmer/Bug-Hunter" target="_blank" class="github">
-              <img src="/icons/github.png" width="28" alt="Github Logo">
-            </a>
-            <div class="auth button" data-action="console">Console</div>
-          </div>
-        </header>
         <div class="authwall flex c hide">
           <b>Login or Register</b>
           <i>To access Console</i>
@@ -76,7 +78,7 @@
             <code>npm install bug-hunter</code>
           </div>
           <div class="subsec flex">
-            <div class="block">Login or Register to</div>
+            <div class="notif block">Login or Register to</div>
             <div class="button" data-action="console">Access Console</div>
           </div>
         </div>
@@ -96,6 +98,9 @@
         <div class="complv sm">Made with ❤️ in <b>India</b></div>
       </footer>
     </div>
+    <div id="console" class="page out">
+    </div>
+    <div class="note-msg flex" data-type="err"><b>Hi</b><span></span></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -5,6 +5,7 @@ import './styles/classes.css';
 import './home';
 
 enableRouter();
+
 const path = window.location.pathname;
 if (["/"].includes(path))
     routeTo("/app");

@@ -1,6 +1,5 @@
-type TestPayload = {
-	type: "test"
-	msg: string
+type SessionPayload = {
+	type: "session"
 }
 
 export type AuthPayload = {
@@ -9,14 +8,14 @@ export type AuthPayload = {
 
 export type OTPPayload = {
 	type: "verify"
-	name: string
+	name?: string
 	code: string
 }
 
 export type Payload = {
     session?: string
-    email: string
-} & (TestPayload | AuthPayload | OTPPayload);
+    email?: string
+} & (SessionPayload | AuthPayload | OTPPayload);
 
 export type ServerResponse = {
     rejected?: false
@@ -25,3 +24,13 @@ export type ServerResponse = {
     data?: any
     msg: any
 } | { rejected: true }
+
+export type Settings = {
+    session: string
+    name: string
+
+    apiKeys: {
+        web: string
+        package: string
+    }
+}

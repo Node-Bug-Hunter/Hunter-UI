@@ -1,51 +1,37 @@
+import { renderConsole } from "../console/console";
 import crossroads from "crossroads";
-import { DataLoader } from "./data-loader";
+import { oneEl } from "./query";
+let where: string = "";
 
 export function enableRouter() {
     crossroads.addRoute("/{section}", renderHomepage);
-    crossroads.addRoute("/dash/{feature}/:sub:", renderDashboard);
+    crossroads.addRoute("/console/{feature}", renderConsole);
 }
 
 export function routeTo(url: string, bypass?: boolean) {
-    if (!bypass) {
-        if (url === "/app") history.replaceState(null, "page", url);
-        else history.replaceState(null, "page", url);
-    }
-
+    if (!bypass) history.replaceState(null, "page", url);
+    if (url.startsWith("/console/"))
+        renderConsole(url.split("/")[2] as any);
+    else renderHomepage();
     crossroads.parse(url);
 }
 
-function renderHomepage(where: string) {
-    console.log("Homepage:", where, "Type:", typeof where);
-
-    switch (where) {
-        case "app":
-            // 
-            break;
-    
-        case "features":
-            // 
-            break;
-    
-        case "faq":
-            // 
-            break;
-    }
+export function setPageLocation(loc: string) {
+    where = loc;
 }
 
-function renderDashboard(feature: string, sub: string) {
-    console.log("Dashboard:", feature, sub);
-
-    switch (feature) {
-        case "resources":
-            if (!sub) return renderServer(sub);
-            DataLoader.pullResources();
-            break;
-    }
+export function getPageLocation(): string {
+    return where;
 }
 
-function renderServer(server: string) {
-    DataLoader.pullServerData(server);
+function renderHomepage() {
+    if (getPageLocation() === "app") return;
+    history.replaceState(null, "page", "/app");
+
+    oneEl("header .auth.button").classList.remove("hide");
+    oneEl("header .profile.icon").classList.add("hide");
+    oneEl("#app").bringToStage();
+    setPageLocation("app");
 }
 
 window.addEventListener("popstate", () => {

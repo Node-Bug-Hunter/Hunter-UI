@@ -16,7 +16,12 @@ if (localStorage.getItem("AUTH_SESSION"))
 
         setPostAuthUI(false, resp.data as Settings);
     });
-else routeTo("/app");
+else {
+    // setSettings({} as Settings);
+    // routeTo("/console/home");
+
+    routeTo("/app"); // ToDo: Enable
+}
 
 oneEl('#copywrt').innerHTML = `Bug-Hunter © ${new Date().getFullYear()}`;
 
@@ -126,8 +131,8 @@ function setPostAuthUI(redirect = false, settings: Settings) {
     if (em) localStorage.setItem("AUTH_EMAIL", em);
     setSettings(settings);
 
+    const isConsoleLoc = location.pathname.startsWith("/console/") && location.pathname.length >= 10;
     onAllEl('.button[data-action="console"]', (el) => el.setAttribute("data-action", "dash"));
-    const isConsoleLoc = location.pathname.startsWith("/console/");
     oneEl(".notif.block").innerText = "Manage resources >";
     const toRedirect = redirect || isConsoleLoc;
 

@@ -1,28 +1,19 @@
 import { renderConsole } from "../console/console";
-import crossroads from "crossroads";
 import { oneEl } from "./query";
+import Navigo from "navigo";
+
 let where: string = "";
+const router = new Navigo("/");
+const getPageLocation = (): string => where;
+const setPageLocation = (loc: string) => where = loc;
+const routeTo = (url: string) => router.navigate(url);
 
-export function enableRouter() {
-    crossroads.addRoute("/{section}", renderHomepage);
-    crossroads.addRoute("/console/{feature}", renderConsole);
-}
-
-export function routeTo(url: string, bypass?: boolean) {
-    if (!bypass) history.replaceState(null, "page", url);
-    if (url.startsWith("/console/"))
-        renderConsole(url.split("/")[2] as any);
-    else renderHomepage();
-    crossroads.parse(url);
-}
-
-export function setPageLocation(loc: string) {
-    where = loc;
-}
-
-export function getPageLocation(): string {
-    return where;
-}
+router.on("/console/:section", (match) => {
+    if (match && match.data && match.data["section"])
+        renderConsole(match.data["section"] as any);
+})
+.on("/app", () => renderHomepage())
+.on(() => routeTo("/app"));
 
 function renderHomepage() {
     if (getPageLocation() === "app") return;
@@ -34,8 +25,8 @@ function renderHomepage() {
     setPageLocation("app");
 }
 
-window.addEventListener("popstate", () => {
-    let path = window.location.pathname;
-    if (path === "/") path = "/app";
-    routeTo(path);
-});
+export {
+    getPageLocation,
+    setPageLocation,
+    routeTo
+}

@@ -9,12 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/crossroads": "^0.0.31",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "crossroads": "^0.12.2",
-    "mustache": "^4.2.0"
+    "mustache": "^4.2.0",
+    "navigo": "^8.11.1"
   }
 }

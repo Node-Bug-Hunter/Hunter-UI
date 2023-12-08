@@ -1,0 +1,41 @@
+#console > .tabs {
+    position: relative;
+    width: 100%;
+}
+
+#console > .tabs::after {
+    content: "";
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    opacity: 0.2;
+    position: absolute;
+    background-color: var(--border);
+}
+
+#console > .tabs span {
+    background-color: var(--popup-bg);
+    transition: all 0.1s ease;
+    filter: brightness(0.4);
+    color: var(--gray-clr);
+    letter-spacing: 1px;
+    font-weight: 100;
+    cursor: pointer;
+    font-size: 14px;
+    display: block;
+    padding: 10px;
+    flex-grow: 1;
+}
+
+#console > .tabs span:not(.selected):hover {
+    filter: brightness(0.8);
+}
+
+#console > .tabs span.selected {
+    font-size: 16px;
+    font-weight: 900;
+    filter: brightness(1);
+    background-color: var(--secondary);
+    box-shadow: inset 18px 0px 2px -16px var(--shadow-a);
+}

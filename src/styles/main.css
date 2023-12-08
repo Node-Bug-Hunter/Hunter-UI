@@ -29,7 +29,7 @@ body > .page.out {
     transform: translateY(-320px);
 }
 
-#app {
+#app, #console {
     min-width: 100%;
     min-height: calc(100vh - 46px);
     min-height: calc(100dvh - 46px);

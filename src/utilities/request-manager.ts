@@ -1,5 +1,5 @@
 import { Payload, ServerResponse } from "./types";
-import { DEV_URL, PROD_URL } from "./const";
+import { SERVER_URI } from "./const";
 import { pushToast } from "../toast";
 let isInProgress = false;
 
@@ -19,11 +19,11 @@ export class RequestManager {
                     return null;
                 }
 
-                payload.session = sess;
+                payload.auth = sess;
                 payload.email = em;
             }
             
-            const fetchResponse = await fetch(PROD_URL, {
+            const fetchResponse = await fetch(SERVER_URI, {
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify(payload),
                 method: "POST"

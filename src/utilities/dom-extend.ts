@@ -4,7 +4,7 @@ type DOMProps = {
     hidden: boolean
 }
 
-interface HTMLElement {
+interface HTMLElement extends Element {
     bringToStage: () => void;
     getProps: () => DOMProps;
     toggleAnim: () => void;
@@ -13,16 +13,16 @@ interface HTMLElement {
     _props: DOMProps;
 }
 
-function onAllEl(selector: string, cb: (e: HTMLElement) => void) {
+function onEveryEl(selector: string, cb: (e: HTMLElement) => void) {
     document.querySelectorAll(selector).forEach(e => cb(e as HTMLElement));
 }
 
-HTMLElement.prototype.bringToStage = function() {
+HTMLElement.prototype.bringToStage = function(this: HTMLElement) {
     const spinner = document.querySelector(".spinner")!;
     spinner.classList.remove("stop");
     const delay = 250;
 
-    onAllEl(".page", el => {
+    onEveryEl(".page", el => {
         if (el === this) return;
         el.classList.add("out");
         setTimeout(() => el.style.display = "none", delay);

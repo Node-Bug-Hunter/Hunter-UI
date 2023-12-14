@@ -1,6 +1,10 @@
+#console { max-width: 880px; }
+
 #console > .tabs {
-    position: relative;
+    position: sticky;
+    z-index: 100;
     width: 100%;
+    top: 42px;
 }
 
 #console > .tabs::after {
@@ -28,6 +32,12 @@
     flex-grow: 1;
 }
 
+#console > .tabs img {
+    margin-bottom: -5px;
+    margin-right: 5px;
+    width: 20px;
+}
+
 #console > .tabs span:not(.selected):hover {
     filter: brightness(0.8);
 }
@@ -39,3 +49,203 @@
     background-color: var(--secondary);
     box-shadow: inset 18px 0px 2px -16px var(--shadow-a);
 }
+
+#console > .container {
+    position: relative;
+}
+
+#console > .container > .section {
+    transition: transform 0.2s ease, opacity 0.15s, visibility 0.2s;
+    transform: translateX(-100px);
+    visibility: hidden;
+    position: absolute;
+    padding: 5px 10px;
+    width: 100%;
+    opacity: 0;
+    top: 5px;
+}
+
+#console > .container > .section.push {
+    transition: transform 0.2s ease, opacity 0.15s, visibility 0s;
+    transform: translateX(0);
+    visibility: visible;
+    opacity: 1;
+}
+
+/* #region Home Section */
+
+#console > .container .data {
+    border: 2px solid var(--accent);
+    border-radius: 50px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+}
+
+#console > .container .item {
+    margin: 10px 12px;
+}
+
+#console > .container .key {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-family: monospace;
+    color: var(--gray-clr);
+    font-size: 13px;
+}
+
+#console > .container .value {
+    color: var(--primary);
+}
+
+#console > .container .server-list {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    max-width: 420px;
+    border-radius: 12px;
+    counter-reset: indexer;
+}
+
+#console > .container .server-list.flash {
+    animation: flash 2s linear;
+    --_bg: var(--gray-clr);
+}
+
+@keyframes flash {
+    0% { background-color: transparent; }
+    15% { background-color: var(--_bg); }
+    30% { background-color: transparent; }
+    45% { background-color: var(--_bg); }
+    60% { background-color: transparent; }
+    75% { background-color: var(--_bg); }
+    90% { background-color: transparent; }
+}
+
+#console > .container .server-list .warn { display: none; }
+#console > .container .server-list.na .warn { display: block; }
+
+#console > .container .server-list.na > u,
+#console > .container .server-list.na > h4,
+#console > .container .server-list.na > ul {
+    display: none;
+}
+
+#console > .container .server-list > h4 {
+    margin-bottom: -4px;
+    font-size: 15px;
+}
+
+#console > .container .server-list > u {
+    text-underline-offset: 4px;
+    filter: brightness(0.6);
+    color: var(--gray-clr);
+    font-size: 12px;
+}
+
+#console > .container .server-list ul { padding: 0; }
+
+#console > .container .server-list li {
+    width: 100%;
+    padding: 8px;
+    margin: 10px;
+    list-style: none;
+    text-align: right;
+    border-radius: 10px;
+    cursor: not-allowed;
+    transform: scale(0.98);
+    --_bg-front: var(--warn-clr);
+    --_indicator: var(--warn-bg);
+    justify-content: space-between;
+    filter: brightness(0.5) blur(0.4px);
+    background-color: var(--_indicator);
+}
+
+#console > .container .server-list li::before {
+    box-shadow: inset 0px 0px 5px var(--_indicator);
+    background-color: var(--_bg-front);
+    text-transform: capitalize;
+    counter-increment: indexer;
+    content: counter(indexer);
+    color: var(--background);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-weight: 900;
+}
+
+#console > .container .server-list li[data-state="connecting"] {
+    animation: flicker 0.5s ease infinite alternate;
+}
+
+@keyframes flicker {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+#console > .container .server-list li[data-state="online"] {
+    --_indicator: var(--ok-bg);
+    --_bg-front: var(--ok-clr);
+    filter: brightness(1);
+    transform: scale(1);
+    cursor: pointer;
+}
+
+#console > .container .server-list li[data-state="online"]:hover {
+    filter: brightness(1.2);
+}
+
+#console > .container .server-list li[data-state="offline"] { --_indicator: var(--err-bg); --_bg-front: var(--err-clr); }
+#console > .container .server-list li div { margin: 0px 4px; }
+#console > .container .server-list li b { align-self: end; }
+
+#console > .container .server-list li i {
+    font-size: 12px;
+    align-self: end;
+    text-align: end;
+    max-width: 200px;
+    text-wrap: balance;
+    word-break: break-all;
+    font-family: monospace;
+}
+
+/* #endregion */
+
+/* #region Monitor Section */
+
+/* #console > .container > . {
+} */
+
+/* #endregion */
+
+/* #region Keys Section */
+
+#console > .container .caution {
+    font-size: 14px;
+    padding: 10px 15px;
+    text-wrap: balance;
+    margin-bottom: 20px;
+    border-radius: 100px;
+    color: var(--err-clr);
+    background: var(--err-bg);
+}
+
+#console > .container .api-key > * {
+    margin: 4px 0;
+}
+
+#console > .container .api-key > b {
+    font-size: 20px;
+}
+
+#console > .container .api-key > span {
+    background: var(--background);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    color: var(--gray-clr);
+    font-family: monospace;
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+    border: none;
+}
+
+/* #endregion */

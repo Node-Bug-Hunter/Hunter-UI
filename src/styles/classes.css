@@ -38,10 +38,46 @@
     background-color: var(--primary);
 }
 
+.action {
+    margin: 5px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 10px;
+    --_hov-bg: var(--info-bg);
+    --_border: var(--info-clr);
+    border: 2px solid var(--_border);
+}
+
+.action.disabled {
+    user-select: none;
+    cursor: not-allowed;
+    transform: scale(0.98);
+    filter: brightness(0.4);
+    --_border: var(--border);
+    background-color: var(--gray-bg);
+}
+
+.action:not(.disabled):hover { background-color: var(--_hov-bg); }
+
+.action.red {
+    --_border: var(--err-clr);
+    --_hov-bg: var(--err-bg);
+}
+
+.action.yellow {
+    --_border: var(--warn-clr);
+    --_hov-bg: var(--warn-bg);
+}
+
+.action.green {
+    --_border: var(--ok-clr);
+    --_hov-bg: var(--ok-bg);
+}
+
 .link {
     padding: 2px 0;
     color: var(--link);
-    text-underline-offset: 2px;
+    text-underline-offset: 4px;
     font-size: var(--font-sz-m);
     text-decoration-style: dashed;
     text-decoration-thickness: 1px;

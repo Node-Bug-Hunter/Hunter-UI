@@ -6,7 +6,7 @@ import { Settings } from './utilities/types';
 import './styles/home.css';
 
 if (localStorage.getItem("AUTH_SESSION"))
-    RequestManager.one({ type: "session" }).then(resp => {
+    RequestManager.one({ type: "authcheck" }).then(resp => {
         if (!resp || resp.rejected || !resp.ok) {
             if (!resp?.rejected && resp?.code === 401)
                 localStorage.removeItem("AUTH_SESSION");
@@ -16,12 +16,7 @@ if (localStorage.getItem("AUTH_SESSION"))
 
         setPostAuthUI(false, resp.data as Settings);
     });
-else {
-    // setSettings({} as Settings);
-    // routeTo("/console/home");
-
-    routeTo("/app"); // ToDo: Enable
-}
+else routeTo("/app");
 
 oneEl('#copywrt').innerHTML = `Bug-Hunter © ${new Date().getFullYear()}`;
 

@@ -18,6 +18,9 @@ body {
     color: var(--text);
 }
 
+::-moz-selection { background: var(--selection); }
+::selection { background: var(--selection); }
+
 body > .page {
     opacity: 1;
     display: none;
@@ -30,7 +33,7 @@ body > .page.out {
 }
 
 #app, #console {
-    min-width: 100%;
+    width: 100%;
     min-height: calc(100vh - 46px);
     min-height: calc(100dvh - 46px);
 }

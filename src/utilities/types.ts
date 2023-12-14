@@ -1,5 +1,5 @@
-type SessionPayload = {
-	type: "session"
+type AuthCheckPayload = {
+	type: "authcheck"
 }
 
 export type AuthPayload = {
@@ -13,9 +13,9 @@ export type OTPPayload = {
 }
 
 export type Payload = {
-    session?: string
+    auth?: string
     email?: string
-} & (SessionPayload | AuthPayload | OTPPayload);
+} & (AuthCheckPayload | AuthPayload | OTPPayload);
 
 export type ServerResponse = {
     rejected?: false
@@ -25,12 +25,21 @@ export type ServerResponse = {
     msg: any
 } | { rejected: true }
 
-export type Settings = {
-    session: string
-    name: string
+export type Server = {
+    lastIP: string
+	name: string
+}
 
-    apiKeys: {
-        web: string
-        package: string
-    }
+export type Settings = {
+	stats: {
+		lastIP: string
+		lastTime: string
+		totalEmails: number
+	}
+
+	cluster: { [id: string]: Server }
+	preferTheme: string
+    session: string
+    apiKey: string
+    name: string
 }

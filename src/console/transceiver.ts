@@ -8,6 +8,7 @@ export class Transceiver {
     private realtimeAbly: Types.RealtimePromise;
     private webObserverPresent: boolean = false;
     private svrLiEl: HTMLLIElement;
+    private onlineCount = 0;
 
     status: SvrStatus = "connecting";
     svrId: string;
@@ -29,10 +30,13 @@ export class Transceiver {
     private setupListeners(id: string) {
         this.realtimeChannel?.subscribe(this.handleMessages);
         this.realtimeChannel?.presence.subscribe((pm) => {
-            const serverOnline = pm.action === "enter" || pm.action === "present" || pm.action === "update";
-            
-            if (pm.clientId.startsWith("package|") && pm.clientId.split("|")[1] === id)
-                this.svrLiEl.setAttribute("data-state", serverOnline ? "online" : "offline")
+
+            if (pm.clientId.startsWith("package|") && pm.clientId.split("|")[1] === id) {
+                const serverOnline = pm.action === "enter" || pm.action === "present" || pm.action === "update";
+                this.onlineCount += serverOnline ? 1 : -1;
+                this.svrLiEl.setAttribute("data-state",
+                    (this.onlineCount === 1) ? "online" : "offline");
+            }
         });
     }
 

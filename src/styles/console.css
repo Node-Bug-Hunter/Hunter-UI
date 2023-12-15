@@ -181,7 +181,8 @@
     to { opacity: 1; }
 }
 
-#console > .container .server-list li[data-state="online"] {
+#console > .container .server-list li[data-state="online"],
+#console > .container .server-list li[data-state="inactive"] {
     --_indicator: var(--ok-bg);
     --_bg-front: var(--ok-clr);
     filter: brightness(1);
@@ -193,6 +194,7 @@
     filter: brightness(1.2);
 }
 
+#console > .container .server-list li[data-state="inactive"] { --_indicator: var(--themed-bg); --_bg-front: var(--text); }
 #console > .container .server-list li[data-state="offline"] { --_indicator: var(--err-bg); --_bg-front: var(--err-clr); }
 #console > .container .server-list li div { margin: 0px 4px; }
 #console > .container .server-list li b { align-self: end; }

@@ -39,13 +39,24 @@ function populateHomeSection() {
 
 function addServerToListUI(server: Server, serverId: string) {
     const liEl = document.createElement("li");
-    liEl.setAttribute("data-state", "connecting");
+    liEl.setAttribute("data-state", !server
+        .remoteActive ? "inactive" : "connecting");
     liEl.setAttribute("data-id", serverId);
     liEl.classList.add("flex");
 
+    let transceiver: Transceiver;
+    if (server.remoteActive) transceiver =
+        Transceiver.create(liEl, serverId);
+
     function handleClick() {
+        if (!server.remoteActive) return pushToast("Remote monitoring is disabled for this server", "info");
         const svrState = liEl.getAttribute("data-state")!;
-        if (svrState === "online") return routeTo("/console/monitor");
+
+        if (svrState === "online") {
+            setTransceiver(transceiver);
+            return routeTo("/console/monitor");
+        }
+
         pushToast(`Server '${server.name}' is not online!`, "info", 2);
     }
 
@@ -62,7 +73,6 @@ function addServerToListUI(server: Server, serverId: string) {
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
-    setTransceiver(Transceiver.create(liEl, serverId));
 }
 
 function populateMonitorSection() {

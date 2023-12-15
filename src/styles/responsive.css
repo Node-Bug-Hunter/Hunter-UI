@@ -12,6 +12,7 @@ body[data-theme="dark"] {
   --gray-clr: #b3b3b3;
   --gray-bg: #525252;
   --border: #ffcfd871;
+  --themed-bg: #20201e;
   --background: #140f00;
   --primary: #ff8400;
   --secondary: #3f3001;
@@ -37,6 +38,7 @@ body[data-theme="light"] {
   --gray-clr: #505050;
   --gray-bg: #c0c0c0;
   --border: #39000b71;
+  --themed-bg: #d3d3c3;
   --background: #fffbec;
   --primary: #e06500;
   --secondary: #ffec8e;

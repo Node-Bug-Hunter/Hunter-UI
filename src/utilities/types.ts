@@ -26,6 +26,7 @@ export type ServerResponse = {
 } | { rejected: true }
 
 export type Server = {
+	remoteActive: boolean
     lastIP: string
 	name: string
 }

@@ -10,7 +10,7 @@ let selectedSection = "home";
 let activeTransceiver: Transceiver;
 const profileIconEl = oneEl("header .profile.icon");
 type Section = "home" | "monitor" | "keys" | "settings";
-export const setTransceiver = (_tcvr: Transceiver) => { activeTransceiver = _tcvr };
+const setTransceiver = (_tcvr: Transceiver) => { activeTransceiver = _tcvr };
 
 function renderConsole(section: Section = "home") {
     if (!getSettings() || getPageLocation() === `/console/${section}`) return;
@@ -74,5 +74,6 @@ onAllEl("#console > .tabs span", spn => spn.addEventListener("click", function()
 }));
 
 export {
-    renderConsole
+    renderConsole,
+    setTransceiver
 }

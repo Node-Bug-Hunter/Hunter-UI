@@ -34,27 +34,31 @@ function populateHomeSection() {
 
     if (Object.keys(settings.cluster).length === 0) return;
     oneEl(".server-list", homeSec).classList.remove("na");
-    for (const key in settings.cluster) addServerToListUI(settings.cluster[key], key);
+    for (const key in settings.cluster) addServerToListUI(settings.cluster[key], key, localStorage.getItem("ACTIVE_TRANSCEIVER"));
 }
 
-function addServerToListUI(server: Server, serverId: string) {
+function addServerToListUI(server: Server, serverId: string, selected: string | null) {
     const liEl = document.createElement("li");
     liEl.setAttribute("data-state", !server
         .remoteActive ? "inactive" : "connecting");
     liEl.setAttribute("data-id", serverId);
+    let transceiver: Transceiver;
     liEl.classList.add("flex");
 
-    let transceiver: Transceiver;
-    if (server.remoteActive) transceiver =
-        Transceiver.create(liEl, serverId);
+    if (server.remoteActive) {
+        transceiver = Transceiver.create(liEl, serverId);
+        if (selected && serverId === selected) setTransceiver(transceiver);
+    }
 
     function handleClick() {
         if (!server.remoteActive) return pushToast("Remote monitoring is disabled for this server", "info");
         const svrState = liEl.getAttribute("data-state")!;
 
         if (svrState === "online") {
+            localStorage.setItem("ACTIVE_TRANSCEIVER", serverId);
             setTransceiver(transceiver);
-            return routeTo("/console/monitor");
+            routeTo("/console/monitor");
+            return;
         }
 
         pushToast(`Server '${server.name}' is not online!`, "info", 2);
@@ -73,6 +77,8 @@ function addServerToListUI(server: Server, serverId: string) {
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
+    setTimeout(() => (transceiver.status !== "online") &&
+        liEl.setAttribute("data-state", "offline"), 20_000);
 }
 
 function populateMonitorSection() {

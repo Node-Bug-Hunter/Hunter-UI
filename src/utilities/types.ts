@@ -44,3 +44,20 @@ export type Settings = {
     apiKey: string
     name: string
 }
+
+type Log = {
+    logValue: any;
+    type: string;
+}
+
+export type LogObject = {
+    logLevel: "LOG" | "INFO" | "TABLE" | "WARN" | "ERROR";
+    timeStamp: number;
+    data: Log[];
+    at: {
+		function: string
+		column: number
+		file: string
+		line: number
+	};
+};

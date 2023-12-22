@@ -1,5 +1,5 @@
 import './styles/responsive.css';
-import './utilities/dom-extend';
+import './utilities/proto-extend';
 import './styles/classes.css';
 import './home';
 

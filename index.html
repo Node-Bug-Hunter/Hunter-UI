@@ -131,27 +131,25 @@
           </div>
         </div>
         <div class="section flex c" data-section="monitor">
-          <div class="console-tb">
-            <div class="log-block">
-              <div class="meta">
-                <span class="level"></span>
-                <span class="time"></span>
-              </div>
-              <div class="logs">
-                <div class="log">
-                  <div class="meta">
-                    <span class="type"></span>
-                    <span class="size"></span>
-                  </div>
-                  <div class="data"></div>
-                </div>
-              </div>
-              <div class="trace">
-                <span></span>
-                <span></span>
-                <span></span>
+          <div class="table console-tb">
+            <div class="thead">
+              <div class="tr flex">
+                <div class="td">Level</div>
+                <div class="td">Time</div>
+                <div class="td">Size</div>
               </div>
             </div>
+            <div class="status flex">
+              <div class="flex">
+                <span class="loading" style="--dim: 20px;"></span>
+                <b>Monitoring active</b>
+              </div>
+              <div class="flex">
+                <div class="action green" data-action="clear-logs">Clear Logs</div>
+                <div class="action yellow" data-action="pause|resume">Pause</div>
+              </div>
+            </div>
+            <div class="tbody"></div>
           </div>
         </div>
         <div class="section flex c" data-section="keys">

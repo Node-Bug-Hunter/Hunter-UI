@@ -18,6 +18,9 @@ if (localStorage.getItem("AUTH_SESSION"))
     });
 else routeTo("/app");
 
+// setSettings({ stats: {}, cluster: {}} as any);
+// routeTo("/console/monitor");
+
 oneEl('#copywrt').innerHTML = `Bug-Hunter © ${new Date().getFullYear()}`;
 
 onAllEl("#app .link", link =>

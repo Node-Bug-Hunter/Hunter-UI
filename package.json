@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "ably": "^1.2.48",
-    "navigo": "^8.11.1",
-    "pretty-print-json": "^2.1.0"
+    "navigo": "^8.11.1"
   }
 }

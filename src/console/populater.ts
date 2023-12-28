@@ -1,18 +1,20 @@
-import { pushToast } from "../toast";
-import { onAllEl, oneEl } from "../utilities/query";
-import { routeTo } from "../utilities/router";
+import { createEl, onAllEl, oneEl } from "../utilities/query";
 import { getSettings } from "../utilities/settings";
+import { routeTo } from "../utilities/router";
 import { Server } from "../utilities/types";
-import { setTransceiver } from "./console";
 import { Transceiver } from "./transceiver";
+import { pushToast } from "../toast";
 
-let homePopulated = false;
+let transceiver: Transceiver;
+export const getTransceiver = () => transceiver;
+let homePopulated = false, monitorPopulated = false;
+
 const keysSec = oneEl('#console > .container > div.section[data-section="keys"]');
 const homeSec = oneEl('#console > .container > div.section[data-section="home"]');
 const monitorSec = oneEl('#console > .container > div.section[data-section="monitor"]');
 const settingsSec = oneEl('#console > .container > div.section[data-section="settings"]');
 
-export function populateUI() {
+export function setupConsole() {
     populateHomeSection();
     populateMonitorSection();
     populateKeysSection();
@@ -31,23 +33,23 @@ function populateHomeSection() {
     ipEl.innerText = settings.stats.lastIP;
     timeEl.innerText = settings.stats.lastTime;
     emailsEl.innerText = `${settings.stats.totalEmails} in total`;
+    if (!getSettings().apiKey || Object.keys(settings.cluster).length === 0) return;
 
-    if (Object.keys(settings.cluster).length === 0) return;
     oneEl(".server-list", homeSec).classList.remove("na");
     for (const key in settings.cluster) addServerToListUI(settings.cluster[key], key, localStorage.getItem("ACTIVE_TRANSCEIVER"));
 }
 
 function addServerToListUI(server: Server, serverId: string, selected: string | null) {
-    const liEl = document.createElement("li");
-    liEl.setAttribute("data-state", !server
-        .remoteActive ? "inactive" : "connecting");
-    liEl.setAttribute("data-id", serverId);
-    let transceiver: Transceiver;
-    liEl.classList.add("flex");
-
+    const liEl = createEl("li", {
+        "data-state": !server.remoteActive ? "inactive" : "connecting",
+        "data-id": serverId,
+        class: "flex",
+    });
+    
+    let tmpTsvr: Transceiver;
     if (server.remoteActive) {
-        transceiver = Transceiver.create(liEl, serverId);
-        if (selected && serverId === selected) setTransceiver(transceiver);
+        tmpTsvr = Transceiver.create(liEl, serverId);
+        if (selected && selected === serverId) transceiver = tmpTsvr;
     }
 
     function handleClick() {
@@ -56,8 +58,10 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
 
         if (svrState === "online") {
             localStorage.setItem("ACTIVE_TRANSCEIVER", serverId);
-            setTransceiver(transceiver);
+            if (transceiver !== tmpTsvr) transceiver?.conclude();
+            transceiver = tmpTsvr;
             routeTo("/console/monitor");
+
             return;
         }
 
@@ -77,12 +81,15 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
-    setTimeout(() => (transceiver.status !== "online") &&
+    setTimeout(() => (tmpTsvr.status !== "online") &&
         liEl.setAttribute("data-state", "offline"), 20_000);
 }
 
 function populateMonitorSection() {
-    // ToDo: Yet to be implemented
+    if (monitorPopulated) return;
+    monitorPopulated = true;
+
+    // ToDo: Further implementation required
 }
 
 export function populateKeysSection() {
@@ -95,6 +102,7 @@ export function populateKeysSection() {
         .classList[hasKey ? "remove" : "add"]("disabled"), keysSec);
     
     if (!hasKey) {
+        toggleActionEl.setAttribute("data-action", "revive");
         keyTxtEl.innerText = `API-Access Disabled`;
         toggleActionEl.classList.remove("red");
         toggleActionEl.classList.add("green");
@@ -105,6 +113,7 @@ export function populateKeysSection() {
     toggleActionEl.classList.add("red");
     toggleActionEl.innerText = "Disable";
     toggleActionEl.classList.remove("green");
+    toggleActionEl.setAttribute("data-action", "revoke");
     keyTxtEl.innerText = `${apiKey.split(":")[0]}:${"#".repeat(16)}`;
 }
 

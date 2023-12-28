@@ -12,10 +12,21 @@ export type OTPPayload = {
 	code: string
 }
 
+type RotateKeyPayload = { type: "rotate" };
+type RevokeKeyPayload = { type: "revoke" };
+type ReviveKeyPayload = { type: "revive" };
+
 export type Payload = {
     auth?: string
     email?: string
-} & (AuthCheckPayload | AuthPayload | OTPPayload);
+} & (
+	RotateKeyPayload |
+	RevokeKeyPayload |
+	ReviveKeyPayload |
+	AuthCheckPayload |
+	AuthPayload |
+	OTPPayload
+);
 
 export type ServerResponse = {
     rejected?: false

@@ -1,23 +1,20 @@
 import { getPageLocation, routeTo, setPageLocation } from "../utilities/router";
+import { getTransceiver, setupConsole } from "./populater";
 import { getSettings } from "../utilities/settings";
 import { oneEl, onAllEl } from "../utilities/query";
-import { Transceiver } from "./transceiver";
-import { populateUI } from "./populater";
 import "../styles/console.css";
 import "./handlers";
 
 let selectedSection = "home";
-let activeTransceiver: Transceiver;
 const profileIconEl = oneEl("header .profile.icon");
 type Section = "home" | "monitor" | "keys" | "settings";
-const setTransceiver = (_tcvr: Transceiver) => { activeTransceiver = _tcvr };
 
 function renderConsole(section: Section = "home") {
     if (!getSettings() || getPageLocation() === `/console/${section}`) return;
     oneEl("header .auth.button").classList.add("hide");
     profileIconEl.classList.remove("hide");
     const consoleEl = oneEl("#console");
-    populateUI();
+    setupConsole();
 
     switch (section) {
         case "keys":
@@ -27,8 +24,8 @@ function renderConsole(section: Section = "home") {
             break;
 
         case "monitor":
-            if (activeTransceiver && activeTransceiver
-                .status === "online") activeTransceiver.initiate();
+            const activeTsvr = getTransceiver();
+            if (activeTsvr && activeTsvr.status === "online") activeTsvr.initiate();
             break;
 
         default: // Default falls to "home"
@@ -58,7 +55,8 @@ onAllEl("#console > .tabs span", spn => spn.addEventListener("click", function()
     const nextPage = this.innerText.toLowerCase();
     
     if (nextPage === "monitor") {
-        if (!activeTransceiver || activeTransceiver.status !== "online") {
+            const activeTsvr = getTransceiver();
+            if (!activeTsvr || activeTsvr.status !== "online") {
             const serverEl = oneEl('#console .section[data-section="home"] .server-list');
 
             serverEl.classList.add("flash");
@@ -74,6 +72,5 @@ onAllEl("#console > .tabs span", spn => spn.addEventListener("click", function()
 }));
 
 export {
-    renderConsole,
-    setTransceiver
+    renderConsole
 }

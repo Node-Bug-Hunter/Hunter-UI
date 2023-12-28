@@ -5,10 +5,10 @@ let isInProgress = false;
 
 export class RequestManager {
     static async one(payload: Payload, showToast = true): Promise<ServerResponse | null> {
-        try {
-            if (isInProgress) return { rejected: true };
-            isInProgress = true;
+        if (isInProgress) return { rejected: true };
+        isInProgress = true;
 
+        try {
             const sess = localStorage.getItem("AUTH_SESSION");
             const em = localStorage.getItem("AUTH_EMAIL");
 

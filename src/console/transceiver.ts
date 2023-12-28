@@ -2,6 +2,7 @@ import { ErrorInfo, Realtime, Types } from "ably/promises";
 import { getSettings } from "../utilities/settings";
 import { decompress } from "../utilities/packer";
 import { LogObject } from "../utilities/types";
+import { FutureCB } from "../utilities/const";
 import { oneEl } from "../utilities/query";
 import { buildLogDOM } from "./logwatch";
 import { pushToast } from "../toast";
@@ -9,7 +10,7 @@ import { pushToast } from "../toast";
 const logsBuffer: { [key: string]: [number, string] } = {};
 
 type SvrStatus = "connecting" | "offline" | "online";
-type MSGEvent = "logs";
+type MSGEvent = "logs" | "feedback";
 
 export class Transceiver {
     private realtimeChannel?: Types.RealtimeChannelPromise;
@@ -79,24 +80,35 @@ export class Transceiver {
                     const rawLog = decompress(compressedLog);
                     if (!rawLog) return pushToast("Unable to decompress message", "err");
                     const logObject: LogObject = JSON_Parse(rawLog);
-                    console.log(logObject);
                     buildLogDOM(logObject);
+                    break;
+                }
+
+                case "feedback": {
+                    if (typeof data !== "string") return;
+                    const func = FutureCB.get(data);
+
+                    if (typeof func === "function") {
+                        FutureCB.delete(data);
+                        func();
+                    }
+                    break;
                 }
             }
         } catch (e) {
-            if (e instanceof Error) {
-                console.error("Error encountered while handling log-message", e.message, e.stack);
-            }
+            if (!(e instanceof Error)) return;
+            console.error("Error encountered while handling a remote-message\n", e.message, e.stack);
         }
     }
 
     private async pub(name: string, data?: any) {
         if (!this.realtimeChannel || this.realtimeAbly.connection.state !== "connected") return;
-        
+        if (typeof data !== "object" && typeof data !== "string") data = data.toString();
+
         try {
             await this.realtimeChannel.publish(name, data);
         } catch (e) {
-            if (!(e instanceof ErrorInfo)) return;
+            if (!(e instanceof Error)) return;
             pushToast("Unable to send commands to your cluster", "warn");
         }
     }
@@ -105,8 +117,16 @@ export class Transceiver {
         return new Transceiver(_liEl, _id);
     }
 
+    async conclude() {
+        const now = Date.now();
+        await this.pub("monitor-stop", now);
+        return `${now}`;
+    }
+
     async initiate() {
-        await this.pub("monitor-start");
+        const now = Date.now();
+        await this.pub("monitor-start", now);
+        return `${now}`;
     }
 }
 

@@ -5,6 +5,7 @@ import { LogObject } from "../utilities/types";
 import { FutureCB } from "../utilities/const";
 import { oneEl } from "../utilities/query";
 import { buildLogDOM } from "./logwatch";
+import { EventEmitter } from "events";
 import { pushToast } from "../toast";
 
 const logsBuffer: { [key: string]: [number, string] } = {};
@@ -12,7 +13,7 @@ const logsBuffer: { [key: string]: [number, string] } = {};
 type SvrStatus = "connecting" | "offline" | "online";
 type MSGEvent = "logs" | "feedback";
 
-export class Transceiver {
+export class Transceiver extends EventEmitter {
     private realtimeChannel?: Types.RealtimeChannelPromise;
     private realtimeAbly: Types.RealtimePromise;
     private svrLiEl: HTMLLIElement;
@@ -21,13 +22,22 @@ export class Transceiver {
     static online = 0;
 
     status: SvrStatus = "connecting";
+    serverName: string = "";
     svrId: string;
 
-    constructor(_liEl: HTMLLIElement, _id: string) {
+    constructor(_liEl: HTMLLIElement, _id: string, _name: string) {
+        super();
         this.svrId = _id;
         this.svrLiEl = _liEl;
+        this.serverName = _name;
         const identifier = `web|${_id}`;
         this.realtimeAbly = new Realtime.Promise({ key: getSettings().apiKey, clientId: identifier });
+
+        setTimeout(() => {
+            if (this.status === "online") return;
+            _liEl.setAttribute("data-state", "offline");
+            this.emit("status-change", false);
+        }, 20_000);
 
         this.realtimeAbly.connection.once("connected").then(() => {
             this.realtimeChannel = this.realtimeAbly.channels.get(_id);
@@ -46,6 +56,7 @@ export class Transceiver {
                 === "present" || pm.action === "update";
             this.onlineCounter += serverOnline ? 1 : -1;
             const isOnline = this.onlineCounter === 1;
+            this.emit("status-change", isOnline);
             Transceiver.online += isOnline ? 1 : -1;
             this.status = isOnline ? "online" : "offline";
             this.svrLiEl.setAttribute("data-state", this.status);
@@ -113,8 +124,8 @@ export class Transceiver {
         }
     }
 
-    static create(_liEl: HTMLLIElement, _id: string) {
-        return new Transceiver(_liEl, _id);
+    static create(_liEl: HTMLLIElement, _id: string, _name: string) {
+        return new Transceiver(_liEl, _id, _name);
     }
 
     async conclude() {

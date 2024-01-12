@@ -3,9 +3,9 @@ import { FutureCB } from "../utilities/const";
 import { onAllEl, oneEl } from "../utilities/query";
 import { getSettings } from "../utilities/settings";
 import { RequestManager } from "../utilities/request-manager";
-import { getTransceiver, populateKeysSection } from "./populater";
+import { getTransceiver, populateKeysSection, toggleMonitorSecStatusState } from "./populater";
 
-onAllEl("#console .action", el => el.addEventListener("click", async () => {
+onAllEl("#console .action, #console .button", el => el.addEventListener("click", async () => {
     if (el.classList.contains("disabled")) return;
     const action = el.getAttribute("data-action");
     const settings = getSettings();
@@ -26,6 +26,7 @@ onAllEl("#console .action", el => el.addEventListener("click", async () => {
                 FutureCB.set(qId, () => {
                     el.toggleAnim();
                     el.innerText = nextAction;
+                    toggleMonitorSecStatusState(toPause);
                     el.setAttribute("data-action", nextAction.toLowerCase());
                 });
             }

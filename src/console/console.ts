@@ -12,8 +12,10 @@ type Section = "home" | "monitor" | "keys" | "settings";
 function renderConsole(section: Section = "home") {
     if (!getSettings() || getPageLocation() === `/console/${section}`) return;
     oneEl("header .auth.button").classList.add("hide");
+    const downTabsEl = oneEl("#console > .tabs.down");
     profileIconEl.classList.remove("hide");
     const consoleEl = oneEl("#console");
+    downTabsEl.classList.add("hide");
     setupConsole();
 
     switch (section) {
@@ -25,7 +27,16 @@ function renderConsole(section: Section = "home") {
 
         case "monitor":
             const activeTsvr = getTransceiver();
-            if (activeTsvr && activeTsvr.status === "online") activeTsvr.initiate();
+            
+            if (activeTsvr) {
+                oneEl(".tabs.down div").innerHTML = `${activeTsvr.status}: '${activeTsvr.serverName}'`;
+                downTabsEl.classList.remove("hide");
+            }
+            else {
+                setTimeout(() => history.replaceState(null,
+                    "", "/console/home"));
+                section = "home";
+            }
             break;
 
         default: // Default falls to "home"
@@ -39,9 +50,9 @@ function renderConsole(section: Section = "home") {
 
     selectedSection = section;
     const isOnConsole = getPageLocation().startsWith("/console/");
-    oneEl("#console > .tabs span.selected")?.classList.remove("selected");
+    oneEl("#console > .tabs.up span.selected")?.classList.remove("selected");
     oneEl("#console > .container .section.push")?.classList.remove("push");
-    oneEl(`#console > .tabs span[data-tab="${section}"]`).classList.add("selected");
+    oneEl(`#console > .tabs.up span[data-tab="${section}"]`).classList.add("selected");
     setTimeout(() => oneEl(`#console > .container .section[data-section="${selectedSection}"]`)?.classList.add("push"));
 
     if (!isOnConsole) consoleEl.bringToStage();
@@ -50,23 +61,25 @@ function renderConsole(section: Section = "home") {
 
 profileIconEl.addEventListener("click", () => alert("Profile section coming soon..."))
 
-onAllEl("#console > .tabs span", spn => spn.addEventListener("click", function() {
+onAllEl("#console > .tabs.up span", spn => spn.addEventListener("click", function() {
     if (this.classList.contains("selected")) return;
     const nextPage = this.innerText.toLowerCase();
     
     if (nextPage === "monitor") {
-            const activeTsvr = getTransceiver();
-            if (!activeTsvr || activeTsvr.status !== "online") {
-            const serverEl = oneEl('#console .section[data-section="home"] .server-list');
+        const activeTsvr = getTransceiver();
+        
+        if (!activeTsvr) {
+            const serverListEl = oneEl('#console .section[data-section="home"] .server-list');
+            if (selectedSection !== "home") routeTo("/console/home");
 
-            serverEl.classList.add("flash");
-            serverEl.addEventListener("animationend",
-                () => serverEl.classList.remove("flash"));
+            serverListEl.classList.add("flash");
+            serverListEl.addEventListener("animationend",
+                () => serverListEl.classList.remove("flash"));
             return;
         }
     }
 
-    oneEl("#console > .tabs span.selected")?.classList.remove("selected");
+    oneEl("#console > .tabs.up span.selected")?.classList.remove("selected");
     routeTo(`/console/${nextPage}`);
     this.classList.add("selected");
 }));

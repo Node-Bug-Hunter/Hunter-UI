@@ -1,69 +1,18 @@
 #console { max-width: 880px; }
 
-#console > .tabs {
-    position: sticky;
-    z-index: 100;
-    width: 100%;
-    top: 42px;
-}
-
-#console > .tabs::after {
-    content: "";
-    bottom: 0;
-    left: 0;
-    height: 1px;
-    width: 100%;
-    opacity: 0.2;
-    position: absolute;
-    background-color: var(--border);
-}
-
-#console > .tabs span {
-    background-color: var(--popup-bg);
-    transition: all 0.1s ease;
-    filter: brightness(0.4);
-    color: var(--gray-clr);
-    letter-spacing: 1px;
-    font-weight: 100;
-    cursor: pointer;
-    font-size: 14px;
-    display: block;
-    padding: 10px;
-    flex-grow: 1;
-}
-
-#console > .tabs img {
-    margin-bottom: -5px;
-    margin-right: 5px;
-    width: 20px;
-}
-
-#console > .tabs span:not(.selected):hover {
-    filter: brightness(0.8);
-}
-
-#console > .tabs span.selected {
-    font-size: 16px;
-    font-weight: 900;
-    filter: brightness(1);
-    background-color: var(--secondary);
-    box-shadow: inset 18px 0px 2px -16px var(--shadow-a);
-}
-
 #console > .container {
     position: relative;
+    overflow: hidden;
 }
 
 #console > .container > .section {
     transition: transform 0.2s ease, opacity 0.15s, visibility 0.2s;
     transform: translateX(-100px);
     visibility: hidden;
-    position: absolute;
-    padding: 5px 10px;
+    padding: 2px 8px;
     width: 100%;
     opacity: 0;
     height: 0;
-    top: 5px;
 }
 
 #console > .container > .section.push {
@@ -231,10 +180,13 @@
     position: relative;
 }
 
-.console-tb .tbody { padding-bottom: 16px; }
+.console-tb .tbody {
+    min-height: calc(100vh - 272px);
+    padding-bottom: 16px;
+}
 
 .console-tb .status {
-    background-color: var(--info-bg);
+    background-color: var(--ex-violet);
     justify-content: space-between;
     font-size: var(--font-sz-s);
     border-radius: 12px;

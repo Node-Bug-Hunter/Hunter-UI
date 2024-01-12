@@ -1,5 +1,5 @@
 import { createEl, onAllEl, oneEl } from "../utilities/query";
-import { getSettings } from "../utilities/settings";
+import { getSettings, setSettings } from "../utilities/settings";
 import { routeTo } from "../utilities/router";
 import { Server } from "../utilities/types";
 import { Transceiver } from "./transceiver";
@@ -45,10 +45,10 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
         "data-id": serverId,
         class: "flex",
     });
-    
+
     let tmpTsvr: Transceiver;
     if (server.remoteActive) {
-        tmpTsvr = Transceiver.create(liEl, serverId);
+        tmpTsvr = Transceiver.create(liEl, serverId, server.name);
         if (selected && selected === serverId) transceiver = tmpTsvr;
     }
 
@@ -58,9 +58,16 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
 
         if (svrState === "online") {
             localStorage.setItem("ACTIVE_TRANSCEIVER", serverId);
-            if (transceiver !== tmpTsvr) transceiver?.conclude();
+
+            if (transceiver !== tmpTsvr) {
+                oneEl(".console-tb .status .action", monitorSec).click();
+                transceiver?.off("status-change", changeMonitorSecState);
+                transceiver?.conclude();
+            }
+
             transceiver = tmpTsvr;
             routeTo("/console/monitor");
+            changeMonitorSecState(true);
 
             return;
         }
@@ -81,15 +88,51 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
-    setTimeout(() => (tmpTsvr.status !== "online") &&
-        liEl.setAttribute("data-state", "offline"), 20_000);
+    transceiver?.on("status-change", changeMonitorSecState);
+}
+
+function changeMonitorSecState(isOnline: boolean) {
+    oneEl(".status .button", monitorSec).classList.toggle("disabled", !isOnline);
+    const monitorBText = oneEl(".status b", monitorSec);
+    const bottomTabsEl = oneEl(".tabs.down");
+
+    const now = "online", then = "offline";
+    bottomTabsEl.setAttribute("data-state", isOnline ? "on" : "off");
+    oneEl("div", bottomTabsEl).innerHTML = `${isOnline ? now : then}: '${transceiver?.serverName}'`
+
+    if (!isOnline) {
+        monitorBText.getProps()._temp_itxt = monitorBText.innerText;
+        monitorBText.innerText = "Server offline";
+    }
+    else if (monitorBText.getProps()._temp_itxt)
+        monitorBText.innerText = monitorBText.getProps()._temp_itxt;
+}
+
+export function toggleMonitorSecStatusState(isPaused: boolean) {
+    const settings = getSettings();
+    if (isPaused !== Boolean(settings.params.logsMonitoringPaused)) return;
+
+    setSettings({
+        ...settings,
+        params: {
+            ...settings.params,
+            logsMonitoringPaused: !isPaused
+        }
+    });
+
+    const monitorStatusEl = oneEl(".status", monitorSec);
+    const statusBtnEl = oneEl(".button", monitorStatusEl);
+    oneEl(".loading", monitorStatusEl).classList.toggle("paused", isPaused);
+    oneEl("b", monitorStatusEl).innerText = `Monitoring ${isPaused ? "paused" : "active"}`;
+    statusBtnEl.setAttribute("data-action", isPaused ? "resume" : "pause");
+    statusBtnEl.innerText = isPaused ? "Resume" : "Pause";
 }
 
 function populateMonitorSection() {
     if (monitorPopulated) return;
     monitorPopulated = true;
 
-    // ToDo: Further implementation required
+    resetMonitorSection();
 }
 
 export function populateKeysSection() {
@@ -97,10 +140,10 @@ export function populateKeysSection() {
     const keyTxtEl = oneEl(".api-key > span", keysSec);
     const apiKey = getSettings().apiKey;
     const hasKey = Boolean(apiKey);
-    
+
     onAllEl(".action:not(.red, .green)", el => el
         .classList[hasKey ? "remove" : "add"]("disabled"), keysSec);
-    
+
     if (!hasKey) {
         toggleActionEl.setAttribute("data-action", "revive");
         keyTxtEl.innerText = `API-Access Disabled`;
@@ -120,3 +163,12 @@ export function populateKeysSection() {
 function populateSettingsSection() {
     // ToDo: Yet to be implemented
 }
+
+function resetMonitorSection() {
+    oneEl(".console-tb .status b", monitorSec).innerText = "Monitoring paused";
+    oneEl(".console-tb .status span.loading", monitorSec).classList.add("paused");
+    const actButtonEl = oneEl(".console-tb .status .button", monitorSec);
+    actButtonEl.setAttribute("data-action", "resume");
+    actButtonEl.innerText = "Start";
+}
+ 

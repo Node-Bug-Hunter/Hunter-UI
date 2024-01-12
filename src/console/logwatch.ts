@@ -1,5 +1,6 @@
 import { createEl, oneEl } from "../utilities/query";
 import { LogObject } from "../utilities/types";
+import { toggleMonitorSecStatusState } from "./populater";
 import { JSON_Stringify } from "./transceiver";
 
 type Holder = "mark" | "key" | "null" | "undefined" | "boolean" | "string" | "number" | "symbol" | "bigint";
@@ -21,7 +22,7 @@ function mapToSpan(holder: Holder, value: string) {
     return `<span data-holder="${holder}" style="color: var(--json-${holder})">${escapeHtml(value)}</span>${breakStr}`;
 }
 
-export function parseJsonToHtml(value: any, indent = 2, level = 0) {
+function buildHTMLFromJSON(value: any, indent = 2, level = 0) {
     const isNested = typeof value === "object" && Boolean(value);
     const space = "&nbsp;".repeat(indent).repeat(++level);
     let htmlRep = "", type;
@@ -41,7 +42,7 @@ export function parseJsonToHtml(value: any, indent = 2, level = 0) {
         for (const key in value) {
             if (!Object.hasOwnProperty.call(value, key)) continue;
             const preMarkup = isArray ? space : `${space}${mapToSpan("key", key)}${mapToSpan("mark", ":")} `;
-            repStr += preMarkup + parseJsonToHtml(value[key], indent, level);
+            repStr += preMarkup + buildHTMLFromJSON(value[key], indent, level);
         }
 
         repStr += backSpace + mapToSpan("mark", marks[1]).trimBR() + commaEnd;
@@ -71,6 +72,7 @@ export function parseJsonToHtml(value: any, indent = 2, level = 0) {
 
 export function buildLogDOM(logObject: LogObject) {
     const { data, logLevel, timeStamp, at } = logObject;
+    toggleMonitorSecStatusState(false);
 
     function getString(value: any) {
         switch (typeof value) {
@@ -134,7 +136,7 @@ export function buildLogDOM(logObject: LogObject) {
         const logEl = createEl("div", { class: `log flex scrollable ${logType}` });
         const lDataEl = createEl("span", { class: `l-data` });
         const typeEl = createEl("div", { class: `type` });
-        const logHTML = parseJsonToHtml(log.logValue);
+        const logHTML = buildHTMLFromJSON(log.logValue);
         if (custom) log.type = log.type.slice(1, -1);
 
         logEl.append(typeEl, lDataEl);

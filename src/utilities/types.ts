@@ -54,6 +54,10 @@ export type Settings = {
     session: string
     apiKey: string
     name: string
+
+	params: {
+		logsMonitoringPaused?: boolean
+	}
 }
 
 type Log = {

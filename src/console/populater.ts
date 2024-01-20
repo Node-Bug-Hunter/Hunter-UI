@@ -5,8 +5,6 @@ import { Server } from "../utilities/types";
 import { Transceiver } from "./transceiver";
 import { pushToast } from "../toast";
 
-let transceiver: Transceiver;
-export const getTransceiver = () => transceiver;
 let homePopulated = false, monitorPopulated = false;
 
 const keysSec = oneEl('#console > .container > div.section[data-section="keys"]');
@@ -47,9 +45,10 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
     });
 
     let tmpTsvr: Transceiver;
+
     if (server.remoteActive) {
         tmpTsvr = Transceiver.create(liEl, serverId, server.name);
-        if (selected && selected === serverId) transceiver = tmpTsvr;
+        if (selected && selected === serverId) Transceiver.active = tmpTsvr;
     }
 
     function handleClick() {
@@ -59,13 +58,13 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
         if (svrState === "online") {
             localStorage.setItem("ACTIVE_TRANSCEIVER", serverId);
 
-            if (transceiver !== tmpTsvr) {
+            if (Transceiver.active !== tmpTsvr) {
                 oneEl(".console-tb .status .action", monitorSec).click();
-                transceiver?.off("status-change", changeMonitorSecState);
-                transceiver?.conclude();
+                Transceiver.active?.off("status-change", changeMonitorSecState);
+                Transceiver.active?.pub("logs-monitor-pause", 0);
             }
 
-            transceiver = tmpTsvr;
+            Transceiver.active = tmpTsvr;
             routeTo("/console/monitor");
             changeMonitorSecState(true);
 
@@ -88,7 +87,7 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
-    transceiver?.on("status-change", changeMonitorSecState);
+    Transceiver.active?.on("status-change", changeMonitorSecState);
 }
 
 function changeMonitorSecState(isOnline: boolean) {
@@ -98,7 +97,7 @@ function changeMonitorSecState(isOnline: boolean) {
 
     const now = "online", then = "offline";
     bottomTabsEl.setAttribute("data-state", isOnline ? "on" : "off");
-    oneEl("div", bottomTabsEl).innerHTML = `${isOnline ? now : then}: '${transceiver?.serverName}'`
+    oneEl("div", bottomTabsEl).innerHTML = `${isOnline ? now : then}: '${Transceiver.active?.serverName}'`
 
     if (!isOnline) {
         monitorBText.getProps()._temp_itxt = monitorBText.innerText;
@@ -171,4 +170,3 @@ function resetMonitorSection() {
     actButtonEl.setAttribute("data-action", "resume");
     actButtonEl.innerText = "Start";
 }
- 

@@ -1,6 +1,6 @@
-import { ErrorInfo, Realtime, Types } from "ably/promises";
 import { getSettings } from "../utilities/settings";
 import { decompress } from "../utilities/packer";
+import { Realtime, Types } from "ably/promises";
 import { LogObject } from "../utilities/types";
 import { FutureCB } from "../utilities/const";
 import { oneEl } from "../utilities/query";
@@ -19,6 +19,7 @@ export class Transceiver extends EventEmitter {
     private svrLiEl: HTMLLIElement;
     private onlineCounter = 0;
 
+    static active: Transceiver;
     static online = 0;
 
     status: SvrStatus = "connecting";
@@ -112,7 +113,7 @@ export class Transceiver extends EventEmitter {
         }
     }
 
-    private async pub(name: string, data?: any) {
+    async pub(name: string, data?: any) {
         if (!this.realtimeChannel || this.realtimeAbly.connection.state !== "connected") return;
         if (typeof data !== "object" && typeof data !== "string") data = data.toString();
 
@@ -126,18 +127,6 @@ export class Transceiver extends EventEmitter {
 
     static create(_liEl: HTMLLIElement, _id: string, _name: string) {
         return new Transceiver(_liEl, _id, _name);
-    }
-
-    async conclude() {
-        const now = Date.now();
-        await this.pub("monitor-stop", now);
-        return `${now}`;
-    }
-
-    async initiate() {
-        const now = Date.now();
-        await this.pub("monitor-start", now);
-        return `${now}`;
     }
 }
 

@@ -1,7 +1,8 @@
 import { getPageLocation, routeTo, setPageLocation } from "../utilities/router";
-import { getTransceiver, setupConsole } from "./populater";
 import { getSettings } from "../utilities/settings";
 import { oneEl, onAllEl } from "../utilities/query";
+import { Transceiver } from "./transceiver";
+import { setupConsole } from "./populater";
 import "../styles/console.css";
 import "./handlers";
 
@@ -26,10 +27,8 @@ function renderConsole(section: Section = "home") {
             break;
 
         case "monitor":
-            const activeTsvr = getTransceiver();
-            
-            if (activeTsvr) {
-                oneEl(".tabs.down div").innerHTML = `${activeTsvr.status}: '${activeTsvr.serverName}'`;
+            if (Transceiver.active) {
+                oneEl(".tabs.down div").innerHTML = `${Transceiver.active.status}: '${Transceiver.active.serverName}'`;
                 downTabsEl.classList.remove("hide");
             }
             else {
@@ -66,9 +65,7 @@ onAllEl("#console > .tabs.up span", spn => spn.addEventListener("click", functio
     const nextPage = this.innerText.toLowerCase();
     
     if (nextPage === "monitor") {
-        const activeTsvr = getTransceiver();
-        
-        if (!activeTsvr) {
+        if (!Transceiver.active) {
             const serverListEl = oneEl('#console .section[data-section="home"] .server-list');
             if (selectedSection !== "home") routeTo("/console/home");
 

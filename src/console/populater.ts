@@ -48,7 +48,11 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
 
     if (server.remoteActive) {
         tmpTsvr = Transceiver.create(liEl, serverId, server.name);
-        if (selected && selected === serverId) Transceiver.active = tmpTsvr;
+
+        if (selected && selected === serverId) {
+            tmpTsvr.on("status-change", changeMonitorSecState);
+            Transceiver.active = tmpTsvr;
+        }
     }
 
     function handleClick() {
@@ -59,9 +63,10 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
             localStorage.setItem("ACTIVE_TRANSCEIVER", serverId);
 
             if (Transceiver.active !== tmpTsvr) {
+                Transceiver.active?.pub("logs-monitor-pause", 0);
+                tmpTsvr.on("status-change", changeMonitorSecState);
                 oneEl(".console-tb .status .action", monitorSec).click();
                 Transceiver.active?.off("status-change", changeMonitorSecState);
-                Transceiver.active?.pub("logs-monitor-pause", 0);
             }
 
             Transceiver.active = tmpTsvr;
@@ -87,11 +92,11 @@ function addServerToListUI(server: Server, serverId: string, selected: string | 
     liEl.appendChild(divEl);
     liEl.addEventListener("click", handleClick);
     oneEl(".server-list > ul", homeSec).prepend(liEl);
-    Transceiver.active?.on("status-change", changeMonitorSecState);
 }
 
 function changeMonitorSecState(isOnline: boolean) {
     oneEl(".status .button", monitorSec).classList.toggle("disabled", !isOnline);
+    if (!isOnline) oneEl(".status .loading", monitorSec).classList.add("paused");
     const monitorBText = oneEl(".status b", monitorSec);
     const bottomTabsEl = oneEl(".tabs.down");
 
@@ -108,7 +113,7 @@ function changeMonitorSecState(isOnline: boolean) {
 }
 
 export function toggleMonitorSecStatusState(isPaused: boolean) {
-    const settings = getSettings();
+    const settings = getSettings(); console.log("State", isPaused, Boolean(settings.params.logsMonitoringPaused));
     if (isPaused !== Boolean(settings.params.logsMonitoringPaused)) return;
 
     setSettings({

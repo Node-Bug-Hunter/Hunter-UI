@@ -1,3 +1,4 @@
+import { toggleMonitorSecStatusState } from "./populater";
 import { getSettings } from "../utilities/settings";
 import { decompress } from "../utilities/packer";
 import { Realtime, Types } from "ably/promises";
@@ -11,7 +12,7 @@ import { pushToast } from "../toast";
 const logsBuffer: { [key: string]: [number, string] } = {};
 
 type SvrStatus = "connecting" | "offline" | "online";
-type MSGEvent = "logs" | "feedback";
+type MSGEvent = "logs-listen-state" | "logs" | "feedback";
 
 export class Transceiver extends EventEmitter {
     private realtimeChannel?: Types.RealtimeChannelPromise;
@@ -74,6 +75,12 @@ export class Transceiver extends EventEmitter {
 
         try {
             switch (name as MSGEvent) {
+                case "logs-listen-state": {
+                    if (data && typeof data === "object" && "paused" in data)
+                        toggleMonitorSecStatusState(data.paused);
+                    break;
+                }
+
                 case "logs": {
                     let compressedLog = data;
 

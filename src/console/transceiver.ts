@@ -1,33 +1,45 @@
-import { ErrorInfo, Realtime, Types } from "ably/promises";
+import { toggleMonitorSecStatusState } from "./populater";
 import { getSettings } from "../utilities/settings";
 import { decompress } from "../utilities/packer";
+import { Realtime, Types } from "ably/promises";
 import { LogObject } from "../utilities/types";
 import { FutureCB } from "../utilities/const";
 import { oneEl } from "../utilities/query";
 import { buildLogDOM } from "./logwatch";
+import { EventEmitter } from "events";
 import { pushToast } from "../toast";
 
 const logsBuffer: { [key: string]: [number, string] } = {};
 
 type SvrStatus = "connecting" | "offline" | "online";
-type MSGEvent = "logs" | "feedback";
+type MSGEvent = "logs-listen-state" | "logs" | "feedback";
 
-export class Transceiver {
+export class Transceiver extends EventEmitter {
     private realtimeChannel?: Types.RealtimeChannelPromise;
     private realtimeAbly: Types.RealtimePromise;
     private svrLiEl: HTMLLIElement;
     private onlineCounter = 0;
 
+    static active: Transceiver;
     static online = 0;
 
     status: SvrStatus = "connecting";
+    serverName: string = "";
     svrId: string;
 
-    constructor(_liEl: HTMLLIElement, _id: string) {
+    constructor(_liEl: HTMLLIElement, _id: string, _name: string) {
+        super();
         this.svrId = _id;
         this.svrLiEl = _liEl;
+        this.serverName = _name;
         const identifier = `web|${_id}`;
         this.realtimeAbly = new Realtime.Promise({ key: getSettings().apiKey, clientId: identifier });
+
+        setTimeout(() => {
+            if (this.status === "online") return;
+            _liEl.setAttribute("data-state", "offline");
+            this.emit("status-change", false);
+        }, 20_000);
 
         this.realtimeAbly.connection.once("connected").then(() => {
             this.realtimeChannel = this.realtimeAbly.channels.get(_id);
@@ -46,6 +58,7 @@ export class Transceiver {
                 === "present" || pm.action === "update";
             this.onlineCounter += serverOnline ? 1 : -1;
             const isOnline = this.onlineCounter === 1;
+            this.emit("status-change", isOnline);
             Transceiver.online += isOnline ? 1 : -1;
             this.status = isOnline ? "online" : "offline";
             this.svrLiEl.setAttribute("data-state", this.status);
@@ -62,6 +75,12 @@ export class Transceiver {
 
         try {
             switch (name as MSGEvent) {
+                case "logs-listen-state": {
+                    if (data && typeof data === "object" && "paused" in data)
+                        toggleMonitorSecStatusState(data.paused);
+                    break;
+                }
+
                 case "logs": {
                     let compressedLog = data;
 
@@ -101,7 +120,7 @@ export class Transceiver {
         }
     }
 
-    private async pub(name: string, data?: any) {
+    async pub(name: string, data?: any) {
         if (!this.realtimeChannel || this.realtimeAbly.connection.state !== "connected") return;
         if (typeof data !== "object" && typeof data !== "string") data = data.toString();
 
@@ -113,20 +132,8 @@ export class Transceiver {
         }
     }
 
-    static create(_liEl: HTMLLIElement, _id: string) {
-        return new Transceiver(_liEl, _id);
-    }
-
-    async conclude() {
-        const now = Date.now();
-        await this.pub("monitor-stop", now);
-        return `${now}`;
-    }
-
-    async initiate() {
-        const now = Date.now();
-        await this.pub("monitor-start", now);
-        return `${now}`;
+    static create(_liEl: HTMLLIElement, _id: string, _name: string) {
+        return new Transceiver(_liEl, _id, _name);
     }
 }
 

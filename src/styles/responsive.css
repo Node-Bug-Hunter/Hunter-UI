@@ -19,8 +19,11 @@ body[data-theme="dark"] {
   --secondary: #3f3001;
   --accent: #ff6523;
 
+  --ex-violet: #31043f;
+
   --shadow-a: #fff8e66c;
   --popup-bg: #160a00ee;
+  --trans-bg: #00000088;
   --selection: #454236c3;
 
   --ok-clr: #d2ffb6;
@@ -57,8 +60,11 @@ body[data-theme="light"] {
   --secondary: #ffec8e;
   --accent: #fba123;
 
+  --ex-violet: #e386ff;
+
   --shadow-a: #2114006c;
   --popup-bg: #fff6c1ee;
+  --trans-bg: #ffffff88;
   --selection: #bab293c3;
 
   --ok-bg: #b6ff88;

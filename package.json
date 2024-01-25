@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "ably": "^1.2.48",
+    "events": "^3.3.0",
     "navigo": "^8.11.1"
   }
 }

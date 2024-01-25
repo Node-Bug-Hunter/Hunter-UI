@@ -56,7 +56,7 @@
             <div class="card flex c" style="--_spacer: 10;">Effortless & super easy integration</div>
           </div>
           <div class="subsec flex">
-            <div class="card flex d" style="--_spacer: 6;">Super flexible configuration</div>
+            <div class="card flex d" style="--_spacer: 6;">Remote cluster monitoring & control</div>
             <div class="card flex e" style="--_spacer: 4;">Detailed contextual reports</div>
           </div>
         </div>
@@ -99,7 +99,7 @@
       </footer>
     </div>
     <div id="console" class="page out">
-      <div class="tabs flex">
+      <div class="tabs up flex">
         <span class="selected" data-tab="home"><img src="/icons/home.png" alt="Home icon">Home</span>
         <span data-tab="monitor"><img src="/icons/workstation.png" alt="Home icon">Monitor</span>
         <span data-tab="keys"><img src="/icons/access.png" alt="Home icon">Keys</span>
@@ -142,11 +142,11 @@
             <div class="status flex">
               <div class="flex">
                 <span class="loading" style="--dim: 20px;"></span>
-                <b>Monitoring active</b>
+                <b>Server offline</b>
               </div>
               <div class="flex">
-                <div class="action green" data-action="clear-logs">Clear Logs</div>
-                <div class="action yellow" data-action="pause">Pause</div>
+                <div class="action green" data-action="clear-logs">Clear</div>
+                <div class="button inv disabled" data-action="resume">Start</div>
               </div>
             </div>
             <div class="tbody"></div>
@@ -167,6 +167,11 @@
           </div>
         </div>
         <div class="section flex c" data-section="settings">Coming soon...</div>
+      </div>
+      <div class="tabs down flex hide" data-state="con">
+        <span class="selected" data-tab="logs"><img src="/icons/logs.png" alt="Home icon">Logs</span>
+        <span data-tab="health"><img src="/icons/health.png" alt="Home icon">Health</span>
+        <div></div>
       </div>
     </div>
     <div class="note-msg flex" data-type="err"><b>Hi</b><span></span></div>

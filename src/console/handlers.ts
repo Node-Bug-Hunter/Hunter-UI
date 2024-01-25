@@ -1,11 +1,12 @@
 import { pushToast } from "../toast";
+import { Transceiver } from "./transceiver";
 import { FutureCB } from "../utilities/const";
 import { onAllEl, oneEl } from "../utilities/query";
 import { getSettings } from "../utilities/settings";
 import { RequestManager } from "../utilities/request-manager";
-import { getTransceiver, populateKeysSection } from "./populater";
+import { populateKeysSection, toggleMonitorSecStatusState } from "./populater";
 
-onAllEl("#console .action", el => el.addEventListener("click", async () => {
+onAllEl("#console .action, #console .button", el => el.addEventListener("click", async () => {
     if (el.classList.contains("disabled")) return;
     const action = el.getAttribute("data-action");
     const settings = getSettings();
@@ -15,26 +16,26 @@ onAllEl("#console .action", el => el.addEventListener("click", async () => {
         case "clear-logs": oneEl("#console .console-tb .tbody").innerHTML = ""; break;
         
         case "pause": case "resume": {
-            const transceiver = getTransceiver();
-
-            if (transceiver) {
+            if (Transceiver.active) {
                 el.toggleAnim();
+                const qId = Date.now();
                 const toPause = action === "pause";
                 const nextAction = toPause ? "Resume" : "Pause";
-                const qId = await transceiver[toPause ? "conclude" : "initiate"]();
-                
-                FutureCB.set(qId, () => {
-                    el.toggleAnim();
-                    el.innerText = nextAction;
-                    el.setAttribute("data-action", nextAction.toLowerCase());
-                });
+                await Transceiver.active.pub(`logs-monitor-${action}`, qId);
+
+                FutureCB.set(qId.toString(),
+                    () => {
+                        el.toggleAnim();
+                        el.innerText = nextAction;
+                        toggleMonitorSecStatusState(toPause);
+                        el.setAttribute("data-action", nextAction.toLowerCase());
+                    }
+                );
             }
             break;
         }
- 
-        case "rotate":
-        case "revive":
-        case "revoke":
+
+        case "rotate": case "revive": case "revoke":
             workOnKey(el, action);
             break;
 
@@ -53,7 +54,7 @@ async function copyToClipboard(text?: string) {
         return true;
     }
     catch {
-        pushToast("Unable to copy to the clipboard!", "err");
+        pushToast("Unable to copy to the clipboard, please use latest version of modern browser!", "err");
         return false;
     }
 }

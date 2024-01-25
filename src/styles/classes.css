@@ -18,12 +18,11 @@
     background-color: var(--secondary);
 }
 
-.button:hover {
-    filter: hue-rotate(5deg);
-    transform: translateY(-2px);
+.button:not(.disabled):hover {
+    filter: hue-rotate(5deg) brightness(0.84);
 }
 
-.button:active {
+.button:not(.disabled):active {
     animation: clicked 0.2s ease-in-out;
 }
 
@@ -36,6 +35,13 @@
 .button.inv {
     color: var(--background);
     background-color: var(--primary);
+}
+
+.button.disabled {
+    filter: brightness(0.4);
+    cursor: not-allowed;
+    user-select: none;
+    opacity: 0.8;
 }
 
 .action {
@@ -217,6 +223,24 @@
     flex-grow: 0;
 }
 
+.loading.paused {
+    animation: none;
+    border-color: var(--text);
+}
+
+.loading.paused::after {
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    content: "";
+    margin: auto;
+    display: block;
+    position: relative;
+    border-radius: 2px;
+    transform: translateY(-50%);
+    background-color: var(--shadow-a);
+}
+
 @keyframes spin { to { -webkit-transform: rotate(360deg); } }
 
 .scrollable {
@@ -227,3 +251,96 @@
 .scrollable::-webkit-scrollbar { height: 4px; }
 .scrollable::-webkit-scrollbar-thumb { background-color: var(--gray-clr); }
 .scrollable::-webkit-scrollbar-track { box-shadow: inset 0 0 4px var(--selection); }
+
+.tabs {
+    position: sticky;
+    z-index: 100;
+    width: 100%;
+    top: 42px;
+}
+
+.tabs.hide { display: none; }
+
+.tabs::after {
+    content: "";
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    opacity: 0.2;
+    position: absolute;
+    background-color: var(--border);
+}
+
+.tabs span {
+    background-color: var(--popup-bg);
+    transition: all 0.1s ease;
+    filter: brightness(0.4);
+    color: var(--gray-clr);
+    letter-spacing: 1px;
+    font-weight: 100;
+    cursor: pointer;
+    font-size: 14px;
+    display: block;
+    padding: 10px;
+    flex-grow: 1;
+}
+
+.tabs img {
+    margin-bottom: -5px;
+    margin-right: 5px;
+    width: 20px;
+}
+
+.tabs span:not(.selected):hover {
+    filter: brightness(0.8);
+}
+
+.tabs span.selected {
+    font-size: 16px;
+    font-weight: 900;
+    filter: brightness(1);
+    background-color: var(--secondary);
+    box-shadow: inset 18px 0px 2px -16px var(--shadow-a);
+}
+
+
+.tabs.down {
+    filter: drop-shadow(2px 4px 6px #000000);
+    background-color: var(--trans-bg);
+    transform: scale(0.84);
+    max-width: 280px;
+    overflow: hidden;
+    flex-wrap: wrap;
+    animation: none;
+    margin: auto;
+    top: unset;
+    bottom: 0;
+}
+
+.tabs.down div {
+    font-size: calc(2px + var(--font-sz-s));
+    color: var(--ok-clr);
+    opacity: 0.8;
+    padding: 6px;
+    width: 100%;
+}
+
+.tabs.down[data-state="con"] div {
+    --_cur-clr: var(--warn-clr);
+    --_cur-bg: var(--warn-bg);
+}
+
+.tabs.down[data-state="off"] div {
+    --_cur-clr: var(--err-clr);
+    --_cur-bg: var(--err-bg);
+}
+
+.tabs.down:not([data-state="on"]) div {
+    animation: clrAlt 0.5s ease-in infinite alternate;
+    color: var(--_cur-clr);
+}
+
+@keyframes clrAlt {
+    to { background-color: var(--_cur-bg); }
+}
